@@ -241,7 +241,7 @@ export const sampleCollectionData = {
     {
     "id": "05ENkeSo",
     "rated": true,
-    "playingAs": 'friendlyfish',
+    "playingAs": 'mutdpro',
     "variant": "standard",
     "speed": "blitz",
     "perf": "blitz",

@@ -26,8 +26,6 @@ const GamePreview = ({ game: { players, status, speed, winner }, playingAs }) =>
   const headingText = generateHeadingText(players, playingAs)
   const winnerText = generateWinnerText(players, winner)
   
-
-
   return (
     <Container>
       <Heading>{headingText}</Heading>
@@ -37,7 +35,6 @@ const GamePreview = ({ game: { players, status, speed, winner }, playingAs }) =>
       <Button>Delete</Button>
     </Container>
   )
-
 }
 
 export default GamePreview

@@ -33,7 +33,7 @@ const MoveForward = styled.div`
 const Button = styled.button``
 
 const ColorIndicator = styled.div`
-  background-color: {props.color};
+  background-color: ${props => props.color};
   width: 15px;
   height: 15px;
   border: 2px solid black;
@@ -42,7 +42,7 @@ const ColorIndicator = styled.div`
 
 `
 
-const GamePanel = ({ players, playingAs, status, nextMove, onNextGame, disableNext, onMoveButtonClick }) => {
+const GamePanel = ({ players, playingAs, playingAsColor, status, nextMove, onNextGame, disableNext, onMoveButtonClick }) => {
 
   const onClick = (e) => {
     e.preventDefault()
@@ -56,7 +56,7 @@ const GamePanel = ({ players, playingAs, status, nextMove, onNextGame, disableNe
       <Header>{generateHeadingText(players, playingAs)}</Header>
       <Details>
         <Detail>You're playing as: {playingAs} 
-          <ColorIndicator color={playingAs === 'white' ? 'white' : 'black'} />
+          <ColorIndicator color={playingAsColor === 'white' ? 'white' : 'black'} />
         </Detail>
         <Detail>Your next move: <strong>{nextMove}</strong></Detail>
         <Detail>Status: {status}</Detail>

@@ -10,7 +10,7 @@ const Container = styled.div`
 const Title = styled.h2``
 const Button = styled.button``
 
-const FilterPanel = ({ setGamesList, setPlayingAs }) => {
+const FilterPanel = ({ setGamesList, setPlayingAs, setUsername, setNumGames, onFindGamesClick }) => {
 
   // Reminder of how this component works
   // in case I forget: user enters in filters
@@ -22,33 +22,15 @@ const FilterPanel = ({ setGamesList, setPlayingAs }) => {
   // they can click "Create Collection" to start
   // playing.
 
-  const [player, setPlayer] = useState('mutdpro')
-  const [numGames, setNumGames] = useState(10)
 
   return (
     <Container>
       <Title>Filter Panel</Title>
       <Filter 
-        setPlayer={setPlayer}
+        setPlayer={setUsername}
         setNumGames={setNumGames}
       />
-      <Button onClick={(e) => {
-        e.preventDefault()
-        
-        // with the api, "sampleGames" would be replaced
-        // by the result of calling this button -- the 
-        // games from the specified player with the correct
-        // number of games
-        const editedGamesList = sampleGames.map(item => ({
-          ...item,
-          playingAs: player,
-          playingAsColor: item.players.white.user.name === player ? 'white' : 'black'
-        }))
-        console.log(editedGamesList)
-        setGamesList((prev) => [...prev, ...editedGamesList])
-        setPlayingAs(player)
-      }}>Find Games</Button>
-
+      <Button onClick={onFindGamesClick}>Find Games</Button>
     </Container>
   )
   
