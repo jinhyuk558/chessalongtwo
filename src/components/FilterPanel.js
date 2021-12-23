@@ -10,7 +10,7 @@ const Container = styled.div`
 const Title = styled.h2``
 const Button = styled.button``
 
-const FilterPanel = ({ setGamesList, setPlayingAs, setUsername, setNumGames, onFindGamesClick }) => {
+const FilterPanel = ({ setGamesList, setPlayingAs, setUsername, setNumGames, onFindGamesClick, loadingGames }) => {
 
   // Reminder of how this component works
   // in case I forget: user enters in filters
@@ -30,7 +30,7 @@ const FilterPanel = ({ setGamesList, setPlayingAs, setUsername, setNumGames, onF
         setPlayer={setUsername}
         setNumGames={setNumGames}
       />
-      <Button onClick={onFindGamesClick}>Find Games</Button>
+      <Button disabled={loadingGames} onClick={onFindGamesClick}>Find Games</Button>
     </Container>
   )
   

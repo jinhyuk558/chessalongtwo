@@ -61,6 +61,7 @@ const MakeCollection = () => {
         setUsername={setUsername}
         setNumGames={setNumGames}
         onFindGamesClick={onFindGamesClick}
+        loadingGames={loadingGames}
       />
       <Notice>(The below games will be used in the new collection)</Notice>
       <Loading>{loadingGames && 'Loading games ...'}</Loading>

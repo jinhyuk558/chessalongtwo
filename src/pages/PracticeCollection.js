@@ -211,3 +211,7 @@ export default PracticeCollection
 // then probably work on the API
 // Next task: make sure api and client work with multiple calls to 
 // differnet players and then think of what other steps are needed
+// Now: got login/register working, also can access use through redux.
+// work on making makeCollection page only accessible if logged in, then
+// adding the collection to the user in the database and then loading
+// that collection in the practice mode
