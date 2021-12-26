@@ -23,6 +23,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState('')
   const dispath = useDispatch()
   const isFetching = useSelector(state => state.isFetching)
+  const isError = useSelector(state => state.error)
 
   const onClick = (e) => {
     e.preventDefault()
@@ -37,9 +38,12 @@ const LoginPage = () => {
         <Input type='password' placeholder="password" onChange={(e) => setPassword(e.target.value)} />
         <Button disabled={isFetching} onClick={onClick}>Submit</Button>
         {isFetching && 'Loading ...'}
+        {isError && 'Error loggin in'}
       </Wrapper>
     </Container>
   )
 }
 
 export default LoginPage
+
+// now: just redirect the user

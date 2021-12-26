@@ -4,9 +4,11 @@ import GamePanel from "../components/GamePanel"
 import { sampleCollectionData } from '../sampleCollectionData'
 import Chess from 'chess.js'
 import { useEffect, useState } from "react"
+import Navbar from "../components/Navbar"
+import { useLocation } from "react-router-dom"
+import { publicRequest } from '../makeRequest'
 
 const Container = styled.div`
-  padding: 20px;
 `
 const Wrapper = styled.div`
   display: flex;
@@ -17,23 +19,24 @@ const BoardSection = styled.div`
 const Title = styled.h1``
 
 const PracticeCollection = () => {
+
+  const location = useLocation()
+  const collectionId = location.pathname.split('/')[2]
   
   // API: have a useEffect here that fetches the 
   // collection data from the API.
 
 
   // Data from Server (just from sample data for now)
-  const [collection, setCollection] = useState(sampleCollectionData)
+  const [collection, setCollection] = useState(null)
 
   // Client-Facing Data
   const [clientGame, setClientGame] = useState(new Chess())
   const [gameIndex, setGameIndex] = useState(0)
   const [status, setStatus] = useState('Good')
   // Current Game Data
-  const gameMoves = collection.gamesList[gameIndex].moves.split(' ')
-  const [playingAsColor, setPlayingAsColor] = useState(
-    collection.gamesList[gameIndex].playingAsColor
-  )
+  const [gameMoves, setGameMoves] = useState([])
+  const [playingAsColor, setPlayingAsColor] = useState('white')
   const [moveIndex, setMoveIndex] = useState(0)
   const [gameOver, setGameOver] = useState(false)
   const [historyNumMovesBack, sethistoryNumMovesBack] = useState(0)
@@ -41,10 +44,20 @@ const PracticeCollection = () => {
   const [nextGameDisabled, setNextGameDisabled] = useState(false)
 
 
-  // temporary useeffect for teting
-  // useEffect(() => {
-  //   console.log(historyFENS)
-  // },[historyFENS])
+
+  // load data from endpoint
+  useEffect(() => {
+    publicRequest.get(`/collection/${collectionId}`)
+    .then((result) => {
+      setCollection(result.data)
+      setGameMoves(result.data.gamesList[gameIndex].moves.split(' '))
+      console.log('Moves: ' + collection.gamesList[gameIndex].moves.split(' '))
+      setPlayingAsColor(
+        collection.gamesList[gameIndex].playingAsColor
+      )
+    })
+    .catch((e) => console.log('could not get collection'))
+  },[])
 
   const safeGameMutate = (modify) => {
     setClientGame((g) => {
@@ -56,6 +69,7 @@ const PracticeCollection = () => {
 
   const onDrop = (sourceSquare, targetSquare) => {
     let move = null 
+    //console.log('Game Index: ' + gameIndex)
     // console.log('user drop move')
     if (moveIndex >= gameMoves.length || historyNumMovesBack > 0) return false;
     safeGameMutate((clientGame) => {
@@ -81,7 +95,7 @@ const PracticeCollection = () => {
   }
 
   useEffect(() => {
-    console.log('NEW TEST: Index is ' + gameIndex + ' and Color is ' + playingAsColor)
+    console.log('Move Index: ' + moveIndex + ', Game Index: ' + gameIndex + ', Playing as Color: ' + playingAsColor + ', Num Moves BacK ' + historyNumMovesBack, 'FENs Length: ' + historyFENS.length)
     if (moveIndex % 2 === 0 && playingAsColor === 'black' ||
         moveIndex % 2 === 1 && playingAsColor === 'white') {
       // console.log('computer move')
@@ -103,35 +117,53 @@ const PracticeCollection = () => {
       },500)
       moving = false
     }
-  },[moveIndex, gameIndex])
+  },[moveIndex, playingAsColor])
+  // playingAsColor is to detect for next game. reason for using this
+  // over gameIndex to detect when game changes is because we want to 
+  // ensure that playingAsColor is set properly before running the
+  // above; otherwise, the correct comptuer move might not be made
 
   // check game end
   useEffect(() => {
-    if (moveIndex >= gameMoves.length) {
+    //console.log('Move Index: ' + moveIndex + ', Game Index: ' + gameIndex, ', Num Moves BacK ' + historyNumMovesBack, 'FENs Length: ' + historyFENS.length)
+    if (collection && moveIndex >= gameMoves.length) {
       setGameOver(true)
     }
   },[moveIndex])
 
   // next game button press
   const onNextGame = () => {
+    setNextGameDisabled(true)
+    console.log('timeout starting')
+    console.log('disabled: ' + nextGameDisabled)
     setTimeout(() => {
+      
+      setHistoryFENS([])
+      sethistoryNumMovesBack(0)
       setClientGame(new Chess())
+      setGameMoves(collection.gamesList[gameIndex + 1].moves.split(' '))
       setGameIndex(gameIndex + 1)
+      //console.log('Game Index: ' + gameIndex)
       setGameOver(false)
-    }, 200)
+      console.log('timeout ended')
+    }, 400)
   }
 
   // need this because we need to make sure that the below variables
   // are updated AFTER the gameIndex is incremented
   useEffect(() => {
-    setPlayingAsColor(collection.gamesList[gameIndex].playingAsColor)
-    setMoveIndex(0)
+    if (collection) {
+      //console.log(collection.gamesList[gameIndex].playingAsColor)
+      setPlayingAsColor(collection.gamesList[gameIndex].playingAsColor)
+      setMoveIndex(0)
+      setNextGameDisabled(false)
+    }
   },[gameIndex])
 
 
   // Change status when game over
   useEffect(() => {
-    if (gameOver) {
+    if (gameOver && collection) {
       const game = collection.gamesList[gameIndex]
       setStatus(
         game.winner ? 
@@ -158,34 +190,43 @@ const PracticeCollection = () => {
   
   return (
     <Container>
-      <Title>Game {gameIndex + 1}/{collection.numGames} in "{collection.name}"</Title>
-      <Wrapper>
-        <BoardSection>
-          <Chessboard 
-            position={historyNumMovesBack === 0 ? clientGame.fen() : historyFENS[historyFENS.length - historyNumMovesBack - 1]} 
-            onPieceDrop={onDrop} 
-            boardOrientation={playingAsColor} 
+      <Navbar />
+      hello??
+      {collection ? 
+      <>
+        <Title>Game {gameIndex + 1}/{collection.numGames} in "{collection.name}"</Title>
+        <Wrapper>
+          <BoardSection>
+            <Chessboard 
+              position={historyNumMovesBack === 0 ? clientGame.fen() : historyFENS[historyFENS.length - historyNumMovesBack - 1]} 
+              onPieceDrop={onDrop} 
+              boardOrientation={playingAsColor} 
+            />
+          </BoardSection>
+          <GamePanel 
+            players={collection.gamesList[gameIndex].players} 
+            playingAs={collection.gamesList[gameIndex].playingAs}
+            status={
+              status
+            }
+            playingAsColor={playingAsColor}
+            nextMove={ 
+              gameOver ? 'Game Over!' : 
+              ((playingAsColor === 'white' && moveIndex % 2 === 0 ||
+              playingAsColor === 'black' && moveIndex % 2 === 1) ? 
+              gameMoves[moveIndex] : 'Waiting for opponent ...')
+            }
+            onNextGame={onNextGame}
+            disableNext={
+              gameIndex === collection.gamesList.length - 1 ||
+              nextGameDisabled
+            }
+            onMoveButtonClick={onMoveButtonClick}
           />
-        </BoardSection>
-        <GamePanel 
-          players={collection.gamesList[gameIndex].players} 
-          playingAs={collection.gamesList[gameIndex].playingAs}
-          status={
-            status
-          }
-          playingAsColor={playingAsColor}
-          nextMove={ 
-            gameOver ? 'Game Over!' : 
-            ((playingAsColor === 'white' && moveIndex % 2 === 0 ||
-             playingAsColor === 'black' && moveIndex % 2 === 1) ? 
-             gameMoves[moveIndex] : 'Waiting for opponent ...')
-          }
-          onNextGame={onNextGame}
-          disableNext={gameIndex === collection.gamesList.length - 1}
-          onMoveButtonClick={onMoveButtonClick}
-        />
-        
-      </Wrapper>
+          
+        </Wrapper>
+      </>
+      : 'Loading ...'}
     </Container>
   )
   
@@ -206,12 +247,11 @@ export default PracticeCollection
 
 
 
+// Now: when user makes collection, make that collection
+// in the database and link it to user and show also
+// let user view it in the profile page
 
-// NOW: fix the moving back/forth system, decide if I want to have it at all,
-// then probably work on the API
-// Next task: make sure api and client work with multiple calls to 
-// differnet players and then think of what other steps are needed
-// Now: got login/register working, also can access use through redux.
-// work on making makeCollection page only accessible if logged in, then
-// adding the collection to the user in the database and then loading
-// that collection in the practice mode
+// When click make collection load it in practice mode
+// Make profile page
+// Make view collection page
+// Protected routes: can soeone access make collection w/o being logged in?

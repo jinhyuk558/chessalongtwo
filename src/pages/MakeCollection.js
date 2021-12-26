@@ -3,6 +3,10 @@ import styled from "styled-components"
 import FilterPanel from "../components/FilterPanel"
 import GamePreview from "../components/GamePreview"
 import { publicRequest } from '../makeRequest'
+import Navbar from "../components/Navbar"
+import { useSelector } from "react-redux"
+import { Redirect, useHistory } from "react-router-dom"
+import { withRouter } from "react-router-dom"
 
 
 const Container = styled.div``
@@ -22,6 +26,9 @@ const MakeCollection = () => {
   const [username, setUsername] = useState('mutdpro')
   const [numGames, setNumGames] = useState(10)
   const [loadingGames, setLoadingGames] = useState(false)
+  const [collectionName, setCollectionName] = useState('')
+  const currentUser = useSelector(state => state.currentUser)
+  const history = useHistory()
   
   const onFindGamesClick = (e) => {
 
@@ -53,8 +60,35 @@ const MakeCollection = () => {
       })
   }
 
+  // when use creates collection
+  const onClick = (e) => {  
+    e.preventDefault()
+    publicRequest.post(`/collection`, { 
+      gamesList, 
+      name: collectionName,  
+      userId: currentUser._id,
+      numGames: gamesList.length
+    })
+    .then((result) => {
+      console.log('successfully posted collection')
+      console.log(result.data)
+      history.push(`/practice/${result.data._id}`)
+      console.log('second')
+      return <Redirect to={`/practice/${result.data._id}`} />
+      //history(`/practice/${result.data._id}`)
+      // return <Redirect exact to={`/practice/${result.data._id}`} />
+      // now: redirect to practice tool with the id of this collection
+      // or should I just pass this in? no because you want to make
+      // the collection page general
+    })
+    .catch((e) => {
+      console.log('could not save collection: ' + e)
+    })
+  }
+
   return (
     <Container>
+      <Navbar />
       <FilterPanel 
         setGamesList={setGamesList} 
         setPlayingAs={setPlayingAs}
@@ -69,13 +103,13 @@ const MakeCollection = () => {
           <GamePreview game={item} playingAs={item.playingAs} key={index}/>
       ))}
       
-      <Input placeholder="collection name"/>
-      <Button>Make Collection</Button>
+      <Input placeholder="collection name" onChange={(e) => setCollectionName(e.target.value)}/>
+      <Button onClick={onClick}>Make Collection</Button>
     </Container>
   )
 }
 
-export default MakeCollection
+export default withRouter(MakeCollection)
 
 
 // I'll be needing Redux for the user, but NOT

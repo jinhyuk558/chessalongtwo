@@ -25,6 +25,7 @@ const RegisterPage = () => {
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
   const isFetching = useSelector(state => state.isFetching)
+  const isError = useSelector(state => state.error)
 
   const onClick = (e) => {
     e.preventDefault()
@@ -40,6 +41,7 @@ const RegisterPage = () => {
         <Input placeholder="password" type="password" onChange={(e) => setPassword(e.target.value)} />
         <Button disabled={isFetching} onClick={onClick}>Submit</Button>
         {isFetching && 'Loading ...'}
+        {isError && 'Error registering'}
       </Wrapper>
     </Container>
   )

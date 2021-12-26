@@ -3,26 +3,37 @@ import PracticeCollection from "./pages/PracticeCollection";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from './pages/RegisterPage'
 import { Switch, Route } from 'react-router-dom'
+import HomePage from "./pages/HomePage";
+import { useSelector } from 'react-redux'
+import { Redirect, withRouter } from "react-router-dom";
+
 
 function App() {
+  const currentUser = useSelector(state => state.currentUser)
   return (
     <div className="App">
       <Switch>
-        <Route path={'/'} exact>
-          <MakeCollection />
-        </Route>
-        <Route path={'/practice'} exact>
-          <PracticeCollection />
-        </Route>
+        <Route path={'/make'} exact component=
+          {currentUser ? MakeCollection : 
+             HomePage 
+          } />
+          
+        
+        <Route path={'/practice'} component={PracticeCollection} />
         <Route path={'/login'} exact>
-          <LoginPage />
+          {currentUser ? () => <Redirect to='/' /> : <LoginPage />}  
         </Route>
         <Route path={'/register'} exact>
-          <RegisterPage />
+          {currentUser ? () => <Redirect to='/' /> : <RegisterPage />} 
+        </Route>
+        <Route path={'/'} exact>
+          <HomePage />
         </Route>
       </Switch>
     </div>
   );
 }
 
-export default App;
+export default withRouter(App);
+
+// it isn't redirecting and practice page isnt' working with id
