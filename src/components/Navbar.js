@@ -49,11 +49,13 @@ const Navbar = () => {
       <Left>
         <Link to='/make'>Create Collection</Link>
       </Left>
-      <Center>Chessalong</Center>
+      <Center><Link to='/'>Chessalong</Link></Center>
       <Right>
         {currentUser ? 
         <UserSection>
-          <UserText>{`User: ${currentUser.username}`}</UserText>
+          <UserText>
+            <Link to={`/profile/${currentUser._id}`}>{currentUser.username}</Link>
+          </UserText>
           <Logout onClick={onLogout}>Logout</Logout>
         </UserSection>
         : 

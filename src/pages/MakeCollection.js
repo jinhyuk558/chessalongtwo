@@ -28,6 +28,8 @@ const MakeCollection = () => {
   const [loadingGames, setLoadingGames] = useState(false)
   const [collectionName, setCollectionName] = useState('')
   const currentUser = useSelector(state => state.currentUser)
+  // this is an array of the players featured in this collection
+  const [playersList, setPlayersList] = useState([])
   const history = useHistory()
   
   const onFindGamesClick = (e) => {
@@ -54,6 +56,11 @@ const MakeCollection = () => {
         }))
         console.log('edited games: ' + editedGamesList)
         setGamesList((prev) => [...prev, ...editedGamesList])
+        
+        // check if same player's game is getting added multiple times
+        if (!playersList.includes(username)) {
+          setPlayersList(prev => [...prev, username])
+        }
         setLoadingGames(false)
       }).catch (e => {
         console.log(e)
@@ -67,7 +74,8 @@ const MakeCollection = () => {
       gamesList, 
       name: collectionName,  
       userId: currentUser._id,
-      numGames: gamesList.length
+      numGames: gamesList.length,
+      playersList: playersList
     })
     .then((result) => {
       console.log('successfully posted collection')

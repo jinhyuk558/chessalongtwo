@@ -42,7 +42,8 @@ const PracticeCollection = () => {
   const [historyNumMovesBack, sethistoryNumMovesBack] = useState(0)
   const [historyFENS, setHistoryFENS] = useState([])
   const [nextGameDisabled, setNextGameDisabled] = useState(false)
-
+  // State for handling deviation
+  const [isDeviation, setIsDeviation] = useState(false)
 
 
   // load data from endpoint
@@ -68,6 +69,13 @@ const PracticeCollection = () => {
   }
 
   const onDrop = (sourceSquare, targetSquare) => {
+
+    // first, save the current game state fen so
+    // it can be used when deviation is made
+    const initialFEN = clientGame.fen()
+
+    
+
     let move = null 
     //console.log('Game Index: ' + gameIndex)
     // console.log('user drop move')
@@ -90,6 +98,41 @@ const PracticeCollection = () => {
     } else {
       setStatus('Calculating Deviation ...')
       setHistoryFENS(prev => [...prev, clientGame.fen()])
+      publicRequest(`/analysis?fen=${clientGame.fen()}`)
+        .then(result => {
+          const data = result.data 
+
+          // original
+          const tempChess = new Chess()
+          tempChess.load(initialFEN)
+          tempChess.move(gameMoves[gameIndex]) 
+          const tempFEN = tempChess.fen()
+          publicRequest(`/analysis?fen=${tempFEN}`)
+            .then(result => {
+              const otherData = result.data
+              console.log(otherData)
+              // make comparison here
+              console.log('comparison: ' + otherData.pvs[0].cp + ' vs ' + data.pvs[0].cp)
+              if (data.pvs[0].cp - otherData.pvs[0].cp >= -30 && playingAsColor === 'white' ||
+                 data.pvs[0].cp - otherData.pvs[0].cp <= 30 && playingAsColor === 'black') {
+                setStatus('Move is about equal/better.')
+              } else {
+                setStatus('Move not about equal/better. ')
+              }
+              setIsDeviation(true)
+            })
+            .catch(e => {
+              setStatus('Unable to provide analysis. ')
+              setIsDeviation(true)
+              console.log('Caught error in second fetch')
+            })
+        })
+        .catch(e => {
+          console.log('Caught error in first fetch')
+          setStatus('Unable to provide analysis. ')
+          setIsDeviation(true)
+        })
+       
     }
     return true
   }
@@ -175,6 +218,8 @@ const PracticeCollection = () => {
   const onMoveButtonClick = (type) => {
     if (type === 'back') {
       if (historyNumMovesBack < historyFENS.length) {
+        console.log(historyFENS)
+        console.log('Compare: ' + historyNumMovesBack + ' ' + historyFENS.length)
         sethistoryNumMovesBack(historyNumMovesBack + 1)
       }
       // safeGameMutate((clientGame) => {
@@ -186,6 +231,21 @@ const PracticeCollection = () => {
         sethistoryNumMovesBack(historyNumMovesBack - 1)
       }
     }
+  }
+
+  // Open Lichess Analysis Board (might change to look at current fen too)
+  const onLichessClick = () => {
+    const newWindow = window.open(`https://lichess.org/analysis?fen=${clientGame.fen()}`, '_blank', 'noopener,noreferrer')
+    if (newWindow) newWindow.opener = null
+  }
+
+  // When user deviates and clicks on revert button
+  const onRevert = () => {
+    clientGame.undo()
+    setHistoryFENS(historyFENS.slice(0, -1))
+    setStatus('Good')
+    setIsDeviation(false)
+    
   }
   
   return (
@@ -222,6 +282,9 @@ const PracticeCollection = () => {
               nextGameDisabled
             }
             onMoveButtonClick={onMoveButtonClick}
+            isDeviation={isDeviation}
+            onLichessClick={onLichessClick}
+            onRevert={onRevert}
           />
           
         </Wrapper>

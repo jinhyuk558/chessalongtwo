@@ -30,7 +30,10 @@ const MoveForward = styled.div`
   font-size: 40px;
   cursor: pointer;
 `
-const Button = styled.button``
+const Button = styled.button`
+  margin-right: 10px;
+  margin-bottom: 10px;
+`
 
 const ColorIndicator = styled.div`
   background-color: ${props => props.color};
@@ -42,14 +45,13 @@ const ColorIndicator = styled.div`
 
 `
 
-const GamePanel = ({ players, playingAs, playingAsColor, status, nextMove, onNextGame, disableNext, onMoveButtonClick }) => {
+const GamePanel = ({ players, playingAs, playingAsColor, status, nextMove, onNextGame, disableNext, onMoveButtonClick, isDeviation, onLichessClick, onRevert }) => {
 
   const onClick = (e) => {
     e.preventDefault()
     onNextGame()
   }
 
-  
 
   return (
     <Container>
@@ -61,6 +63,10 @@ const GamePanel = ({ players, playingAs, playingAsColor, status, nextMove, onNex
         <Detail>Your next move: <strong>{nextMove}</strong></Detail>
         <Detail>Status: {status}</Detail>
       </Details>
+      {isDeviation && <>
+        <Button onClick={onRevert}>Revert</Button>
+        <Button onClick={onLichessClick}>Analyze Position on Lichess</Button>
+      </>}
       <Controls>
         <MoveBack>
           <ion-icon 
