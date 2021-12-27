@@ -18,6 +18,8 @@ const Notice = styled.span`
   margin-bottom: 10px;
 `
 const Loading = styled.h4``
+const Select = styled.select``
+const Option = styled.option``
 
 const MakeCollection = () => {
 
@@ -30,6 +32,7 @@ const MakeCollection = () => {
   const currentUser = useSelector(state => state.currentUser)
   // this is an array of the players featured in this collection
   const [playersList, setPlayersList] = useState([])
+  const [isPublic, setIsPublic] = useState(false)
   const history = useHistory()
   
   const onFindGamesClick = (e) => {
@@ -75,7 +78,9 @@ const MakeCollection = () => {
       name: collectionName,  
       userId: currentUser._id,
       numGames: gamesList.length,
-      playersList: playersList
+      playersList: playersList,
+      isPublic: isPublic,
+      timesPlayed: 1 
     })
     .then((result) => {
       console.log('successfully posted collection')
@@ -94,6 +99,10 @@ const MakeCollection = () => {
     })
   }
 
+  const onDeleteGame = (id) => {
+    setGamesList(gamesList.filter((game, i) => i !== id))
+  }
+
   return (
     <Container>
       <Navbar />
@@ -107,10 +116,16 @@ const MakeCollection = () => {
       />
       <Notice>(The below games will be used in the new collection)</Notice>
       <Loading>{loadingGames && 'Loading games ...'}</Loading>
-      {gamesList.map((item,index) => (
-          <GamePreview game={item} playingAs={item.playingAs} key={index}/>
+      {gamesList.map((item,index) => (  
+          <GamePreview game={item} playingAs={item.playingAs} key={index} id={index} onDeleteGame={onDeleteGame}/>
       ))}
-      
+      <Select 
+        name="privacy" 
+        onChange={(e) => e.target.value === 'public' ? setIsPublic(true) : setIsPublic(false)} 
+      >
+        <Option value="private">private</Option>
+        <Option value="public">public</Option>
+      </Select>
       <Input placeholder="collection name" onChange={(e) => setCollectionName(e.target.value)}/>
       <Button onClick={onClick}>Make Collection</Button>
     </Container>

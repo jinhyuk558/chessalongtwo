@@ -21,7 +21,7 @@ const Date = styled.p`
 `
 const Button = styled.button``
 
-const GamePreview = ({ game: { players, status, speed, winner }, playingAs }) => {
+const GamePreview = ({ game: { players, status, speed, winner }, playingAs, onDeleteGame, id }) => {
 
   const headingText = generateHeadingText(players, playingAs)
   const winnerText = generateWinnerText(players, winner)
@@ -32,7 +32,10 @@ const GamePreview = ({ game: { players, status, speed, winner }, playingAs }) =>
       <WinnerText>{winnerText}</WinnerText>
       <SpeedText>{speed}</SpeedText>
       <Date>5/6/2020</Date>
-      <Button>Delete</Button>
+      <Button onClick={(e) => {
+        e.preventDefault()
+        onDeleteGame(id)
+      }}>Delete</Button>
     </Container>
   )
 }

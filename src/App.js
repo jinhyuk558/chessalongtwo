@@ -7,6 +7,7 @@ import HomePage from "./pages/HomePage";
 import { useSelector } from 'react-redux'
 import { Redirect, withRouter } from "react-router-dom";
 import ProfilePage from "./pages/ProfilePage";
+import LandingPage from "./pages/LandingPage";
 import { useEffect, useState } from "react";
 
 
@@ -34,8 +35,11 @@ function App() {
         <Route path={'/profile'} >
           {currentUser ? () => <ProfilePage /> : <HomePage />} 
         </Route>
+        <Route path={'/profile'} >
+          {currentUser ? () => <ProfilePage /> : <HomePage />} 
+        </Route>
         <Route path={'/'} exact>
-          <HomePage />
+          {currentUser ? <HomePage /> : <LandingPage />}
         </Route>
       </Switch>
     </div>

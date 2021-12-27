@@ -1,6 +1,7 @@
 
 import { Redirect, withRouter, useHistory } from "react-router-dom"
 import styled from "styled-components"
+import { publicRequest } from "../makeRequest"
 
 const Container = styled.div`
   margin-bottom: 15px;
@@ -25,6 +26,10 @@ const CollectionPreview = ({ collection: { name, createdAt, numGames, playersLis
   const onClick = (e) => {
     e.preventDefault()
     console.log('clicked')
+    // Increment # of times played
+    publicRequest.put(`/collection/increment/${_id}`)
+      .then(result => console.log('Incremented'))
+      .catch(e => console.log('Error incrementing'))
     history.push(`/practice/${_id}`)
     //return <Redirect to={`/practice/${_id}`} />
   }
@@ -34,7 +39,7 @@ const CollectionPreview = ({ collection: { name, createdAt, numGames, playersLis
       <Heading>{name}</Heading>
       {playersList && 
         <Detail>
-          Players: 
+          Player(s): 
           {playersList.map(item => <Player key={item}>{item}</Player>)}
         </Detail>
       }

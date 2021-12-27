@@ -7,6 +7,7 @@ import { useEffect, useState } from "react"
 import Navbar from "../components/Navbar"
 import { useLocation } from "react-router-dom"
 import { publicRequest } from '../makeRequest'
+import GridNavigation from "../components/GridNavigation"
 
 const Container = styled.div`
 `
@@ -16,7 +17,15 @@ const Wrapper = styled.div`
 const BoardSection = styled.div`
   margin-right: 20px;
 `
+const ControlsSection = styled.div`
+  display: flex;
+  flex-direction: column;
+`
 const Title = styled.h1``
+const MarkCompleteBtn = styled.button`
+  max-width: 50%;
+  margin-top: 10px;
+`
 
 const PracticeCollection = () => {
 
@@ -44,18 +53,24 @@ const PracticeCollection = () => {
   const [nextGameDisabled, setNextGameDisabled] = useState(false)
   // State for handling deviation
   const [isDeviation, setIsDeviation] = useState(false)
+  // Array for completed games
+  const [completedGames, setCompletedGames] = useState([])
 
 
   // load data from endpoint
   useEffect(() => {
     publicRequest.get(`/collection/${collectionId}`)
     .then((result) => {
+      setCompletedGames(new Array(result.data.numGames).fill(false))
+      console.log('Heres the array: ' + new Array(result.data.numGames).fill(false))
+      console.log('here')
       setCollection(result.data)
       setGameMoves(result.data.gamesList[gameIndex].moves.split(' '))
       console.log('Moves: ' + collection.gamesList[gameIndex].moves.split(' '))
       setPlayingAsColor(
         collection.gamesList[gameIndex].playingAsColor
       )
+      
     })
     .catch((e) => console.log('could not get collection'))
   },[])
@@ -110,7 +125,8 @@ const PracticeCollection = () => {
           publicRequest(`/analysis?fen=${tempFEN}`)
             .then(result => {
               const otherData = result.data
-              console.log(otherData)
+
+              
               // make comparison here
               console.log('comparison: ' + otherData.pvs[0].cp + ' vs ' + data.pvs[0].cp)
               if (data.pvs[0].cp - otherData.pvs[0].cp >= -30 && playingAsColor === 'white' ||
@@ -138,7 +154,7 @@ const PracticeCollection = () => {
   }
 
   useEffect(() => {
-    console.log('Move Index: ' + moveIndex + ', Game Index: ' + gameIndex + ', Playing as Color: ' + playingAsColor + ', Num Moves BacK ' + historyNumMovesBack, 'FENs Length: ' + historyFENS.length)
+    //console.log('Move Index: ' + moveIndex + ', Game Index: ' + gameIndex + ', Playing as Color: ' + playingAsColor + ', Num Moves BacK ' + historyNumMovesBack, 'FENs Length: ' + historyFENS.length)
     if (moveIndex % 2 === 0 && playingAsColor === 'black' ||
         moveIndex % 2 === 1 && playingAsColor === 'white') {
       // console.log('computer move')
@@ -175,26 +191,32 @@ const PracticeCollection = () => {
   },[moveIndex])
 
   // next game button press
-  const onNextGame = () => {
+  const onNextGame = (optionalGameIndex) => {
     setNextGameDisabled(true)
-    console.log('timeout starting')
-    console.log('disabled: ' + nextGameDisabled)
+    //console.log('timeout starting')
+    //console.log('disabled: ' + nextGameDisabled)
     setTimeout(() => {
       
       setHistoryFENS([])
       sethistoryNumMovesBack(0)
       setClientGame(new Chess())
       setGameMoves(collection.gamesList[gameIndex + 1].moves.split(' '))
-      setGameIndex(gameIndex + 1)
+      if (optionalGameIndex) {
+        setGameIndex(parseInt(optionalGameIndex))
+      } else {
+        setGameIndex(gameIndex + 1)
+      }
+      
       //console.log('Game Index: ' + gameIndex)
       setGameOver(false)
-      console.log('timeout ended')
+      //console.log('timeout ended')
     }, 400)
   }
 
   // need this because we need to make sure that the below variables
   // are updated AFTER the gameIndex is incremented
   useEffect(() => {
+    console.log('New game Index: ' + gameIndex)
     if (collection) {
       //console.log(collection.gamesList[gameIndex].playingAsColor)
       setPlayingAsColor(collection.gamesList[gameIndex].playingAsColor)
@@ -218,8 +240,8 @@ const PracticeCollection = () => {
   const onMoveButtonClick = (type) => {
     if (type === 'back') {
       if (historyNumMovesBack < historyFENS.length) {
-        console.log(historyFENS)
-        console.log('Compare: ' + historyNumMovesBack + ' ' + historyFENS.length)
+        //console.log(historyFENS)
+        //console.log('Compare: ' + historyNumMovesBack + ' ' + historyFENS.length)
         sethistoryNumMovesBack(historyNumMovesBack + 1)
       }
       // safeGameMutate((clientGame) => {
@@ -247,11 +269,22 @@ const PracticeCollection = () => {
     setIsDeviation(false)
     
   }
+
+  // Functions on Grid Navigation/Marking current game complete
+  const onMarkComplete = (e) => {
+    e.preventDefault()
+    let newArray = [...completedGames]
+    newArray[gameIndex] = true
+    setCompletedGames(newArray)
+    onNextGame()
+  }
+  const onGridClick = (index) => {
+    onNextGame(index)
+  }
   
   return (
     <Container>
       <Navbar />
-      hello??
       {collection ? 
       <>
         <Title>Game {gameIndex + 1}/{collection.numGames} in "{collection.name}"</Title>
@@ -263,29 +296,35 @@ const PracticeCollection = () => {
               boardOrientation={playingAsColor} 
             />
           </BoardSection>
-          <GamePanel 
-            players={collection.gamesList[gameIndex].players} 
-            playingAs={collection.gamesList[gameIndex].playingAs}
-            status={
-              status
-            }
-            playingAsColor={playingAsColor}
-            nextMove={ 
-              gameOver ? 'Game Over!' : 
-              ((playingAsColor === 'white' && moveIndex % 2 === 0 ||
-              playingAsColor === 'black' && moveIndex % 2 === 1) ? 
-              gameMoves[moveIndex] : 'Waiting for opponent ...')
-            }
-            onNextGame={onNextGame}
-            disableNext={
-              gameIndex === collection.gamesList.length - 1 ||
-              nextGameDisabled
-            }
-            onMoveButtonClick={onMoveButtonClick}
-            isDeviation={isDeviation}
-            onLichessClick={onLichessClick}
-            onRevert={onRevert}
-          />
+          <ControlsSection>
+            <GamePanel 
+              players={collection.gamesList[gameIndex].players} 
+              playingAs={collection.gamesList[gameIndex].playingAs}
+              status={
+                status
+              }
+              playingAsColor={playingAsColor}
+              nextMove={ 
+                gameOver ? 'Game Over!' : 
+                ((playingAsColor === 'white' && moveIndex % 2 === 0 ||
+                playingAsColor === 'black' && moveIndex % 2 === 1) ? 
+                gameMoves[moveIndex] : 'Waiting for opponent ...')
+              }
+              onNextGame={onNextGame}
+              disableNext={
+                gameIndex === collection.gamesList.length - 1 ||
+                nextGameDisabled
+              }
+              onMoveButtonClick={onMoveButtonClick}
+              isDeviation={isDeviation}
+              onLichessClick={onLichessClick}
+              onRevert={onRevert}
+              isCompleted={completedGames[gameIndex]}
+            />
+            <GridNavigation completedGames={completedGames} onGridClick={onGridClick} currentIndex={gameIndex} />
+            <MarkCompleteBtn disabled={nextGameDisabled} onClick={onMarkComplete}>Mark This Game Complete</MarkCompleteBtn>
+          </ControlsSection>
+          
           
         </Wrapper>
       </>

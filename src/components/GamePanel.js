@@ -6,8 +6,9 @@ const Container = styled.div`
   padding: 15px;
   border: 1px solid lightgray;
   height: fit-content;
+  max-width: 90%;
 `
-const Header = styled.h2``
+const Header = styled.h1``
 const Details = styled.div`
   margin-top: 5px;
   display: flex;
@@ -34,6 +35,10 @@ const Button = styled.button`
   margin-right: 10px;
   margin-bottom: 10px;
 `
+const CompletedText = styled.span`
+  font-weight: 700;
+  font-size: 20px;
+`
 
 const ColorIndicator = styled.div`
   background-color: ${props => props.color};
@@ -42,10 +47,9 @@ const ColorIndicator = styled.div`
   border: 2px solid black;
   border-radius: 50%;
   margin-left: 5px;
-
 `
 
-const GamePanel = ({ players, playingAs, playingAsColor, status, nextMove, onNextGame, disableNext, onMoveButtonClick, isDeviation, onLichessClick, onRevert }) => {
+const GamePanel = ({ players, playingAs, playingAsColor, status, nextMove, onNextGame, disableNext, onMoveButtonClick, isDeviation, onLichessClick, onRevert, isCompleted }) => {
 
   const onClick = (e) => {
     e.preventDefault()
@@ -62,6 +66,7 @@ const GamePanel = ({ players, playingAs, playingAsColor, status, nextMove, onNex
         </Detail>
         <Detail>Your next move: <strong>{nextMove}</strong></Detail>
         <Detail>Status: {status}</Detail>
+        {isCompleted && <CompletedText>(Completed)</CompletedText>}
       </Details>
       {isDeviation && <>
         <Button onClick={onRevert}>Revert</Button>

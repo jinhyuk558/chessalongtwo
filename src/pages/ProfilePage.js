@@ -55,13 +55,15 @@ const ProfilePage = () => {
           <Date>{dateText}</Date>
           <Heading>Collections</Heading>
           {
-            userCollections.map(item => <CollectionPreview collection={item} key={item._id} />)
+            userCollections.length > 0 ?
+            userCollections.map(item => <CollectionPreview collection={item} key={item._id} />) :
+            '(Currently Empty)'
           }
         </div>
         
       
       
-      : 'Loading ...'
+      : <div>'Loading ...'</div>
       }
       
       
