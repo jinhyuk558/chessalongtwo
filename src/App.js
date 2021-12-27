@@ -19,21 +19,21 @@ function App() {
   return (
     <div className="App">
       <Switch>
-        <Route path={'/make'} exact component=
-          {currentUser ? MakeCollection : 
-             HomePage 
-          } />
+        <Route path={'/make'} exact >
+          {currentUser ? <MakeCollection /> : 
+            () => {
+              alert('You must be logged in to make a collection')
+              return <HomePage />
+            } 
+          } 
+        </Route>
           
-        
         <Route path={'/practice'} component={PracticeCollection} />
         <Route path={'/login'} exact>
           {currentUser ? () => <Redirect to='/' /> : <LoginPage />}  
         </Route>
         <Route path={'/register'} exact>
           {currentUser ? () => <Redirect to='/' /> : <RegisterPage />} 
-        </Route>
-        <Route path={'/profile'} >
-          {currentUser ? () => <ProfilePage /> : <HomePage />} 
         </Route>
         <Route path={'/profile'} >
           {currentUser ? () => <ProfilePage /> : <HomePage />} 

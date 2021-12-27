@@ -11,13 +11,15 @@ const Heading = styled.div`
   margin-bottom: 5px;
 `
 const WinnerText = styled.p`
-  margin-bottom: 5px;
+  margin-bottom: 2px;
+  font-size: 15px;
 `
 const SpeedText = styled.p`
   margin-bottom: 5px;
 `
 const Date = styled.p`
   margin-bottom: 5px;
+  font-size: 10px;
 `
 const Button = styled.button``
 

@@ -11,6 +11,9 @@ import GridNavigation from "../components/GridNavigation"
 
 const Container = styled.div`
 `
+const MainWrapper = styled.div`
+  padding: 10px 20px;
+`
 const Wrapper = styled.div`
   display: flex;
 `
@@ -23,8 +26,9 @@ const ControlsSection = styled.div`
 `
 const Title = styled.h1``
 const MarkCompleteBtn = styled.button`
-  max-width: 50%;
+  max-width: 45%;
   margin-top: 10px;
+  padding: 5px 5px;
 `
 
 const PracticeCollection = () => {
@@ -218,6 +222,7 @@ const PracticeCollection = () => {
   useEffect(() => {
     console.log('New game Index: ' + gameIndex)
     if (collection) {
+      setStatus('Good')
       //console.log(collection.gamesList[gameIndex].playingAsColor)
       setPlayingAsColor(collection.gamesList[gameIndex].playingAsColor)
       setMoveIndex(0)
@@ -257,7 +262,11 @@ const PracticeCollection = () => {
 
   // Open Lichess Analysis Board (might change to look at current fen too)
   const onLichessClick = () => {
-    const newWindow = window.open(`https://lichess.org/analysis?fen=${clientGame.fen()}`, '_blank', 'noopener,noreferrer')
+    const index = historyFENS.length > 1 ? historyFENS.length - 2 : historyFENS.length - 1
+    const newWindow = window.open(
+      `https://lichess.org/analysis?fen=${historyFENS[index]}`, 
+      '_blank', 
+      'noopener,noreferrer')
     if (newWindow) newWindow.opener = null
   }
 
@@ -287,46 +296,48 @@ const PracticeCollection = () => {
       <Navbar />
       {collection ? 
       <>
-        <Title>Game {gameIndex + 1}/{collection.numGames} in "{collection.name}"</Title>
-        <Wrapper>
-          <BoardSection>
-            <Chessboard 
-              position={historyNumMovesBack === 0 ? clientGame.fen() : historyFENS[historyFENS.length - historyNumMovesBack - 1]} 
-              onPieceDrop={onDrop} 
-              boardOrientation={playingAsColor} 
-            />
-          </BoardSection>
-          <ControlsSection>
-            <GamePanel 
-              players={collection.gamesList[gameIndex].players} 
-              playingAs={collection.gamesList[gameIndex].playingAs}
-              status={
-                status
-              }
-              playingAsColor={playingAsColor}
-              nextMove={ 
-                gameOver ? 'Game Over!' : 
-                ((playingAsColor === 'white' && moveIndex % 2 === 0 ||
-                playingAsColor === 'black' && moveIndex % 2 === 1) ? 
-                gameMoves[moveIndex] : 'Waiting for opponent ...')
-              }
-              onNextGame={onNextGame}
-              disableNext={
-                gameIndex === collection.gamesList.length - 1 ||
-                nextGameDisabled
-              }
-              onMoveButtonClick={onMoveButtonClick}
-              isDeviation={isDeviation}
-              onLichessClick={onLichessClick}
-              onRevert={onRevert}
-              isCompleted={completedGames[gameIndex]}
-            />
-            <GridNavigation completedGames={completedGames} onGridClick={onGridClick} currentIndex={gameIndex} />
-            <MarkCompleteBtn disabled={nextGameDisabled} onClick={onMarkComplete}>Mark This Game Complete</MarkCompleteBtn>
-          </ControlsSection>
-          
-          
-        </Wrapper>
+        <MainWrapper>
+          <Title>Game {gameIndex + 1}/{collection.numGames} in "{collection.name}"</Title>
+          <Wrapper>
+            <BoardSection>
+              <Chessboard 
+                position={historyNumMovesBack === 0 ? clientGame.fen() : historyFENS[historyFENS.length - historyNumMovesBack - 1]} 
+                onPieceDrop={onDrop} 
+                boardOrientation={playingAsColor} 
+              />
+            </BoardSection>
+            <ControlsSection>
+              <GamePanel 
+                players={collection.gamesList[gameIndex].players} 
+                playingAs={collection.gamesList[gameIndex].playingAs}
+                status={
+                  status
+                }
+                playingAsColor={playingAsColor}
+                nextMove={ 
+                  gameOver ? 'Game Over!' : 
+                  ((playingAsColor === 'white' && moveIndex % 2 === 0 ||
+                  playingAsColor === 'black' && moveIndex % 2 === 1) ? 
+                  gameMoves[moveIndex] : 'Waiting for opponent ...')
+                }
+                onNextGame={onNextGame}
+                disableNext={
+                  gameIndex === collection.gamesList.length - 1 ||
+                  nextGameDisabled
+                }
+                onMoveButtonClick={onMoveButtonClick}
+                isDeviation={isDeviation}
+                onLichessClick={onLichessClick}
+                onRevert={onRevert}
+                isCompleted={completedGames[gameIndex]}
+              />
+              <GridNavigation completedGames={completedGames} onGridClick={onGridClick} currentIndex={gameIndex} />
+              <MarkCompleteBtn disabled={nextGameDisabled} onClick={onMarkComplete}>Mark This Game Complete</MarkCompleteBtn>
+            </ControlsSection>
+            
+            
+          </Wrapper>
+        </MainWrapper>
       </>
       : 'Loading ...'}
     </Container>

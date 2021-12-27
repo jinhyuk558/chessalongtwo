@@ -5,7 +5,9 @@ import CollectionPreview from "../components/CollectionPreview";
 import Navbar from "../components/Navbar";
 import { publicRequest } from "../makeRequest";
 
-const Container = styled.div``
+const Container = styled.div`
+  padding: 10px 15px;
+`
 const Title = styled.h1``
 const Date = styled.div`
   margin-bottom: 10px;
@@ -47,27 +49,25 @@ const ProfilePage = () => {
       .catch(e => console.log('could not get this users collection'))
   },[user])
   return (
-    <Container>
+    <>
       <Navbar />
-      {user ? 
-        <div>
-          <Title>{user.username}</Title>
-          <Date>{dateText}</Date>
-          <Heading>Collections</Heading>
-          {
-            userCollections.length > 0 ?
-            userCollections.map(item => <CollectionPreview collection={item} key={item._id} />) :
-            '(Currently Empty)'
-          }
-        </div>
+      <Container>
         
-      
-      
-      : <div>'Loading ...'</div>
-      }
-      
-      
-    </Container>
+        {user ? 
+          <div>
+            <Title>{user.username}</Title>
+            <Date>{dateText}</Date>
+            <Heading>Collections</Heading>
+            {
+              userCollections.length > 0 ?
+              userCollections.map(item => <CollectionPreview collection={item} key={item._id} />) :
+              '(Currently Empty)'
+            }
+          </div>
+        : <div>'Loading ...'</div>
+        }
+      </Container>
+    </>
   )
 }
 

@@ -34,6 +34,7 @@ const MoveForward = styled.div`
 const Button = styled.button`
   margin-right: 10px;
   margin-bottom: 10px;
+  padding: 5px 5px;
 `
 const CompletedText = styled.span`
   font-weight: 700;
@@ -64,7 +65,7 @@ const GamePanel = ({ players, playingAs, playingAsColor, status, nextMove, onNex
         <Detail>You're playing as: {playingAs} 
           <ColorIndicator color={playingAsColor === 'white' ? 'white' : 'black'} />
         </Detail>
-        <Detail>Your next move: <strong>{nextMove}</strong></Detail>
+        <Detail>Your next move:&nbsp;<strong>{nextMove}</strong></Detail>
         <Detail>Status: {status}</Detail>
         {isCompleted && <CompletedText>(Completed)</CompletedText>}
       </Details>

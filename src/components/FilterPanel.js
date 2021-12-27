@@ -7,10 +7,13 @@ import { sampleGames } from '../sampleGames'
 const Container = styled.div`
   margin-bottom: 20px;
 `
-const Title = styled.h2``
+const Title = styled.h2`
+  margin-bottom: 10px;
+`
+const Subtitle = styled.h3``
 const Button = styled.button``
 
-const FilterPanel = ({ setGamesList, setPlayingAs, setUsername, setNumGames, onFindGamesClick, loadingGames }) => {
+const FilterPanel = ({ setGamesList, setPlayingAs, setUsername, setNumGames, onFindGamesClick, loadingGames, setVariant }) => {
 
   // Reminder of how this component works
   // in case I forget: user enters in filters
@@ -26,9 +29,11 @@ const FilterPanel = ({ setGamesList, setPlayingAs, setUsername, setNumGames, onF
   return (
     <Container>
       <Title>Filter Panel</Title>
+      <Subtitle>Top Players</Subtitle>
       <Filter 
         setPlayer={setUsername}
         setNumGames={setNumGames}
+        setVariant={setVariant}
       />
       <Button disabled={loadingGames} onClick={onFindGamesClick}>Find Games</Button>
     </Container>

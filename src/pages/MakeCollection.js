@@ -7,9 +7,13 @@ import Navbar from "../components/Navbar"
 import { useSelector } from "react-redux"
 import { Redirect, useHistory } from "react-router-dom"
 import { withRouter } from "react-router-dom"
+import SearchFilterPanel from "../components/SearchFilterPanel"
 
 
-const Container = styled.div``
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+`
 const Button = styled.button`
   margin-top: 20px;
 `
@@ -20,6 +24,9 @@ const Notice = styled.span`
 const Loading = styled.h4``
 const Select = styled.select``
 const Option = styled.option``
+const Error = styled.p`
+  color: red;
+`
 
 const MakeCollection = () => {
 
@@ -27,6 +34,7 @@ const MakeCollection = () => {
   const [playingAs, setPlayingAs] = useState('')
   const [username, setUsername] = useState('mutdpro')
   const [numGames, setNumGames] = useState(10)
+  const [variant, setVariant] = useState('blitz')
   const [loadingGames, setLoadingGames] = useState(false)
   const [collectionName, setCollectionName] = useState('')
   const currentUser = useSelector(state => state.currentUser)
@@ -34,6 +42,8 @@ const MakeCollection = () => {
   const [playersList, setPlayersList] = useState([])
   const [isPublic, setIsPublic] = useState(false)
   const history = useHistory()
+  // other state variables
+  const [noGamesFound, setNoGamesFound] = useState(false)
   
   const onFindGamesClick = (e) => {
 
@@ -47,7 +57,7 @@ const MakeCollection = () => {
 
     // for now, default game mode is blitz
     let fetchedGames = []
-    publicRequest.get(`/games?username=${username}&max=${numGames}&prefType=blitz`)
+    publicRequest.get(`/games?username=${username}&max=${numGames}&prefType=${variant}`)
       .then((result) => {
         console.log('successfully found games')
         console.log(result)
@@ -60,6 +70,11 @@ const MakeCollection = () => {
         console.log('edited games: ' + editedGamesList)
         setGamesList((prev) => [...prev, ...editedGamesList])
         
+        if (fetchedGames.length > 0) {
+          setNoGamesFound(false)
+        } else {
+          setNoGamesFound(true)
+        }
         // check if same player's game is getting added multiple times
         if (!playersList.includes(username)) {
           setPlayersList(prev => [...prev, username])
@@ -111,23 +126,41 @@ const MakeCollection = () => {
         setPlayingAs={setPlayingAs}
         setUsername={setUsername}
         setNumGames={setNumGames}
+        setVariant={setVariant}
         onFindGamesClick={onFindGamesClick}
         loadingGames={loadingGames}
       />
+      <SearchFilterPanel 
+        setGamesList={setGamesList}
+        setPlayingAs={setPlayingAs}
+        setUsername={setUsername}
+        setVariant={setVariant}
+        setNumGames={setNumGames}
+        onFindGamesClick={onFindGamesClick}
+        loadingGames={loadingGames}
+      />
+
+
       <Notice>(The below games will be used in the new collection)</Notice>
       <Loading>{loadingGames && 'Loading games ...'}</Loading>
+      {noGamesFound && <Error>No games found. Try again with different parameters</Error>}
+
       {gamesList.map((item,index) => (  
           <GamePreview game={item} playingAs={item.playingAs} key={index} id={index} onDeleteGame={onDeleteGame}/>
       ))}
-      <Select 
-        name="privacy" 
-        onChange={(e) => e.target.value === 'public' ? setIsPublic(true) : setIsPublic(false)} 
-      >
-        <Option value="private">private</Option>
-        <Option value="public">public</Option>
-      </Select>
-      <Input placeholder="collection name" onChange={(e) => setCollectionName(e.target.value)}/>
-      <Button onClick={onClick}>Make Collection</Button>
+
+      <div>
+        <Select 
+          name="privacy" 
+          onChange={(e) => e.target.value === 'public' ? setIsPublic(true) : setIsPublic(false)} 
+        >
+          <Option value="private">private</Option>
+          <Option value="public">public</Option>
+        </Select>
+        <Input placeholder="collection name" onChange={(e) => setCollectionName(e.target.value)}/>
+        <Button onClick={onClick}>Make Collection</Button>
+      </div>
+      
     </Container>
   )
 }

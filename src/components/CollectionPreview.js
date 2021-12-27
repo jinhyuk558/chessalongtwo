@@ -8,7 +8,7 @@ const Container = styled.div`
 `
 const Heading = styled.div`
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 500;
 `
 const Detail = styled.p``
 const Player = styled.span`

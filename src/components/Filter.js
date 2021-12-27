@@ -10,7 +10,7 @@ const Select = styled.select`
 const Option = styled.option``
 const Label = styled.label``
 
-const Filter = ({ setPlayer, setNumGames }) => {
+const Filter = ({ setPlayer, setNumGames, setVariant }) => {
   return (
     <Container>
       <Label htmlFor="player">Choose player </Label>
@@ -23,6 +23,12 @@ const Filter = ({ setPlayer, setNumGames }) => {
       <Select name="numGames" onChange={(e) => setNumGames(e.target.value)}>
         <Option value="10">10</Option>
         <Option value="20">20</Option>
+      </Select>
+
+      <Label htmlFor="variant">Variant </Label>
+      <Select name="variant" onChange={(e) => setVariant(e.target.value)}>
+        <Option value="blitz">blitz</Option>
+        <Option value="rapid">rapid</Option>
       </Select>
     </Container>
   )
