@@ -3,17 +3,24 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import CollectionPreview from "../components/CollectionPreview";
 import Navbar from "../components/Navbar";
-import { publicRequest } from "../makeRequest";
+import { publicRequest } from "../services/makeRequest";
 
 const Container = styled.div`
-  padding: 10px 15px;
+  padding: 15px 60px;
 `
-const Title = styled.h1``
-const Date = styled.div`
-  margin-bottom: 10px;
+const Title = styled.h1`
+  font-weight: 500;
+  font-size: 30px;
 `
-const Heading = styled.h3`
+const Date = styled.p`
+  margin-bottom: 25px;
+  font-size: 10px;
+`
+const Heading = styled.h4`
   margin-bottom: 5px;
+  font-weight: 500;
+  border-bottom: 1px solid black;
+  width: fit-content;
 `
 
 const ProfilePage = () => {

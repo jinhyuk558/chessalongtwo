@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { login } from '../redux/apiCalls'
 import { useDispatch, useSelector } from 'react-redux'
@@ -24,6 +24,17 @@ const LoginPage = () => {
   const dispath = useDispatch()
   const isFetching = useSelector(state => state.isFetching)
   const isError = useSelector(state => state.error)
+
+
+  useEffect(() => {
+   const refreshCount = sessionStorage.getItem('reloadCount')
+   if (!refreshCount) {
+     sessionStorage.setItem('reloadCount', 1)
+     window.location.reload()
+   } else {
+    sessionStorage.removeItem('reloadCount')
+   }
+  },[])
 
   const onClick = (e) => {
     e.preventDefault()

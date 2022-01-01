@@ -13,13 +13,16 @@ const Heading = styled.div`
 const WinnerText = styled.p`
   margin-bottom: 2px;
   font-size: 15px;
+  color: #747474;
 `
 const SpeedText = styled.p`
   margin-bottom: 5px;
+  color: #747474;
 `
 const Date = styled.p`
   margin-bottom: 5px;
   font-size: 10px;
+  color: #747474;
 `
 const Button = styled.button``
 
@@ -32,7 +35,7 @@ const GamePreview = ({ game: { players, status, speed, winner }, playingAs, onDe
     <Container>
       <Heading>{headingText}</Heading>
       <WinnerText>{winnerText}</WinnerText>
-      <SpeedText>{speed}</SpeedText>
+      <SpeedText>variant: {speed}</SpeedText>
       <Date>5/6/2020</Date>
       <Button onClick={(e) => {
         e.preventDefault()

@@ -5,13 +5,24 @@ import Filter from "./Filter"
 import { sampleGames } from '../sampleGames'
 
 const Container = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 35px;
 `
 const Title = styled.h2`
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  font-size: 35px;
 `
-const Subtitle = styled.h3``
-const Button = styled.button``
+const Subtitle = styled.h2`
+  font-weight: 500;
+`
+const Button = styled.button`
+font-size: 15px;
+cursor: pointer;
+border: none;
+background-color: #3B444F;
+color: white;
+padding: 5px 10px;
+border-radius: 3px;
+`
 
 const FilterPanel = ({ setGamesList, setPlayingAs, setUsername, setNumGames, onFindGamesClick, loadingGames, setVariant }) => {
 
@@ -29,7 +40,7 @@ const FilterPanel = ({ setGamesList, setPlayingAs, setUsername, setNumGames, onF
   return (
     <Container>
       <Title>Filter Panel</Title>
-      <Subtitle>Top Players</Subtitle>
+      <Subtitle>Choose from pre-selected players</Subtitle>
       <Filter 
         setPlayer={setUsername}
         setNumGames={setNumGames}

@@ -22,8 +22,7 @@ function App() {
         <Route path={'/make'} exact >
           {currentUser ? <MakeCollection /> : 
             () => {
-              alert('You must be logged in to make a collection')
-              return <HomePage />
+              return <LandingPage />
             } 
           } 
         </Route>

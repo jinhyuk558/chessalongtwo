@@ -2,7 +2,7 @@ import { useState } from "react"
 import styled from "styled-components"
 import FilterPanel from "../components/FilterPanel"
 import GamePreview from "../components/GamePreview"
-import { publicRequest } from '../makeRequest'
+import { publicRequest, testInstance, userRequest } from '../services/makeRequest'
 import Navbar from "../components/Navbar"
 import { useSelector } from "react-redux"
 import { Redirect, useHistory } from "react-router-dom"
@@ -13,16 +13,44 @@ import SearchFilterPanel from "../components/SearchFilterPanel"
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  padding: 15px 60px;
+
 `
 const Button = styled.button`
   margin-top: 20px;
+  height: 42px;
+  color: white;
+  background-color: #252D3B;
+  border: none;
+  cursor: pointer;
+  padding: 2px 10px;
 `
-const Input = styled.input``
+const Input = styled.input`
+  padding: 10px 15px;
+  width: 35%;
+`
 const Notice = styled.span`
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 `
-const Loading = styled.h4``
-const Select = styled.select``
+const Loading = styled.h4`
+  margin-bottom: 15px;
+`
+const MakeCollectionSection = styled.div`
+  margin-top: 20px;
+`
+const VisibilitySection = styled.div``
+const Visibility = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+`
+const Label = styled.p`
+  margin-right: 5px;
+`
+const Select = styled.select`
+
+  height: 30px;
+`
 const Option = styled.option``
 const Error = styled.p`
   color: red;
@@ -44,6 +72,7 @@ const MakeCollection = () => {
   const history = useHistory()
   // other state variables
   const [noGamesFound, setNoGamesFound] = useState(false)
+  const [loadingCollection, setLoadingCollection] = useState(false)
   
   const onFindGamesClick = (e) => {
 
@@ -88,7 +117,8 @@ const MakeCollection = () => {
   // when use creates collection
   const onClick = (e) => {  
     e.preventDefault()
-    publicRequest.post(`/collection`, { 
+    setLoadingCollection(true)
+    testInstance.post(`/collection`, { 
       gamesList, 
       name: collectionName,  
       userId: currentUser._id,
@@ -119,8 +149,9 @@ const MakeCollection = () => {
   }
 
   return (
+    <>
+    <Navbar />
     <Container>
-      <Navbar />
       <FilterPanel 
         setGamesList={setGamesList} 
         setPlayingAs={setPlayingAs}
@@ -141,27 +172,39 @@ const MakeCollection = () => {
       />
 
 
-      <Notice>(The below games will be used in the new collection)</Notice>
-      <Loading>{loadingGames && 'Loading games ...'}</Loading>
+      {gamesList.length > 0 &&<Notice>(The below games will be used in the new collection)</Notice>}
+      {loadingGames && <Loading>Loading games ...</Loading>}
       {noGamesFound && <Error>No games found. Try again with different parameters</Error>}
 
       {gamesList.map((item,index) => (  
           <GamePreview game={item} playingAs={item.playingAs} key={index} id={index} onDeleteGame={onDeleteGame}/>
       ))}
 
-      <div>
-        <Select 
-          name="privacy" 
-          onChange={(e) => e.target.value === 'public' ? setIsPublic(true) : setIsPublic(false)} 
-        >
-          <Option value="private">private</Option>
-          <Option value="public">public</Option>
-        </Select>
-        <Input placeholder="collection name" onChange={(e) => setCollectionName(e.target.value)}/>
-        <Button onClick={onClick}>Make Collection</Button>
-      </div>
+      {
+        gamesList.length > 0 &&
+        <MakeCollectionSection>
+          <VisibilitySection>
+            <Visibility>
+              <Label htmlFor='privacy'>Visibility: </Label>
+              <Select 
+                name="privacy" 
+                onChange={(e) => e.target.value === 'public' ? setIsPublic(true) : setIsPublic(false)} 
+              >
+                <Option value="private">private</Option>
+                <Option value="public">public</Option>
+              </Select>
+            </Visibility>
+            
+            (Users with collection ID will still be able to interact with this collection)
+          </VisibilitySection>
+          <Input placeholder="collection name" onChange={(e) => setCollectionName(e.target.value)}/>
+          <Button  onClick={onClick} disabled={loadingCollection}>Make Collection</Button>
+        </MakeCollectionSection>
+      }
       
     </Container>
+      
+    </>
   )
 }
 

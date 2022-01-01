@@ -3,11 +3,18 @@ import { useEffect } from "react";
 import styled from "styled-components";
 import CollectionPreview from "../components/CollectionPreview";
 import Navbar from "../components/Navbar";
-import { publicRequest } from "../makeRequest";
+import { publicRequest } from "../services/makeRequest";
 
 const Container = styled.div`
 `
-const Heading = styled.h2``
+const Wrapper = styled.div`
+  padding: 15px 60px;
+`
+const Heading = styled.p`
+  font-size: 35px;
+  font-weight: 600;
+  margin-bottom: 15px !important;
+`
 
 // basically the dashboard
 const HomePage = () => {
@@ -26,13 +33,15 @@ const HomePage = () => {
   return (
     <Container>
       <Navbar />
-
-      <Heading>Popular Public Collections</Heading>
-      {
-        popularCollections ? 
-        popularCollections.map(item => <CollectionPreview key={item._id} collection={item} />) :
-        ''
-      }
+      <Wrapper>
+        <Heading>Popular Public Collections</Heading>
+        {
+          popularCollections ? 
+          popularCollections.map(item => <CollectionPreview key={item._id} collection={item} />) :
+          ''
+        }
+      </Wrapper>
+      
     </Container>
   )
 }

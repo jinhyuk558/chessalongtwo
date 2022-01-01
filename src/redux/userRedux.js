@@ -30,7 +30,8 @@ const userSlice = createSlice({
     registerFailure: (state) => {
       state.isFetching = false 
       state.error = true
-    }
+    },
+    
   }
 })
 
@@ -42,4 +43,11 @@ export const {
   registerStart,
   registerSuccess
 } = userSlice.actions
+
+export const refreshToken = (accessToken) => (dispatch) => {
+  dispatch({
+    type: 'REFRESH_TOKEN',
+    payload: accessToken
+  })
+}
 export default userSlice.reducer

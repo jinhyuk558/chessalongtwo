@@ -6,13 +6,13 @@ import Chess from 'chess.js'
 import { useEffect, useState } from "react"
 import Navbar from "../components/Navbar"
 import { useLocation } from "react-router-dom"
-import { publicRequest } from '../makeRequest'
+import { publicRequest } from '../services/makeRequest'
 import GridNavigation from "../components/GridNavigation"
 
 const Container = styled.div`
 `
 const MainWrapper = styled.div`
-  padding: 10px 20px;
+  padding: 10px 60px;
 `
 const Wrapper = styled.div`
   display: flex;
