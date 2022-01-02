@@ -58,12 +58,44 @@ const ProfilePage = () => {
   return (
     <>
       <Navbar />
-      <Container>
+      <div className="section">
+        
+          {
+            user ? 
+            <div className="container">
+              <p className="title">{user.username}</p>
+              <p className="subtitle is-size-6">{dateText}</p>
+              <p className="is-size-4 has-text-weight-medium">Collections</p>
+              <div className="columns is-multiline">
+              {
+                userCollections.length > 0 ?
+                userCollections.map(item => 
+                  <div className="column is-one-quarter">
+                    <CollectionPreview collection={item} key={item._id} />
+                  </div>
+                ) 
+                :
+                '(Currently Empty)'
+              }
+              </div>
+              
+            </div>
+            : <p className="is-size-5">Loading ...</p>
+
+          }
+        </div>
+    </>
+  )
+}
+
+export default ProfilePage
+
+/*
+<Container>
         
         {user ? 
           <div>
-            <Title>{user.username}</Title>
-            <Date>{dateText}</Date>
+            
             <Heading>Collections</Heading>
             {
               userCollections.length > 0 ?
@@ -74,8 +106,4 @@ const ProfilePage = () => {
         : <div>'Loading ...'</div>
         }
       </Container>
-    </>
-  )
-}
-
-export default ProfilePage
+      */

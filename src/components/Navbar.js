@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { Link, Redirect } from 'react-router-dom'
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChess, faChessKing, faChessKnight } from "@fortawesome/free-solid-svg-icons";
 
 const Container = styled.div`
   display: flex;
@@ -63,36 +65,87 @@ const Navbar = () => {
   }
 
   return (
-    <Container>
-      <Left>
-        <Link to='/make' style={{"color": "white", "textDecoration": "none"}}>Create Collection</Link>
-      </Left>
-      <Center>
-        <Link to='/' style={{"color": "white", "textDecoration": "none"}}>Chessalong</Link>
-      </Center>
-      <Right>
-        {currentUser ? 
-        <UserSection>
-          <UserText>
-            <Link to={`/profile/${currentUser._id}`} style={{'color': 'white', 'textDecoration': 'none'}}>
+    <nav className="navbar">
+      <div className="navbar-brand">
+        <Link className="navbar-item" to="/">
+          <span class="icon-text">
+            <span class="icon">
+              <FontAwesomeIcon icon={faChess} size="lg" />
+            </span>
+            <span>Chessalong</span>
+          </span>
+        </Link>
+      </div>
+
+      <div className="navbar-menu">
+        <div className="navbar-start">
+          <Link className="navbar-item" to="/make">
+            Create Collection
+          </Link>
+          <a className="navbar-item">
+            Documentation
+          </a>
+        </div>
+      </div>
+      
+
+      {
+        currentUser ? 
+        <div className="navbar-end">
+          <div className="navbar-item">
+            <Link className="navbar-item" to={`/profile/${currentUser._id}`}>
               {currentUser.username}
             </Link>
-          </UserText>
-          <Logout onClick={onLogout}>Logout</Logout>
-        </UserSection>
+            <div className="buttons">
+              <a className="button is-light" onClick={onLogout}>
+                Logout
+              </a>
+            </div>
+          </div>
+        </div>
+        
         : 
-        <AuthSection>
-          <AuthLink>
-            <Link to='/login' style={{"color": "white", "textDecoration": "none"}}>Login</Link>
-          </AuthLink>
-          <AuthLink>
-            <Link to='/register' style={{"color": "white", "textDecoration": "none"}}>Register</Link>
-          </AuthLink>
-        </AuthSection>
-        }
-      </Right>
-    </Container>
+        <div className="navbar-end">
+          <div className="navbar-item">
+            <div className="buttons">
+              <Link className="button is-primary" to="/register">
+                <strong>Sign up</strong>
+              </Link>
+              <Link className="button is-light" to="/login">
+                Log in
+              </Link>
+            </div>
+          </div>
+        </div>
+      }
+      
+      
+
+
+
+
+    </nav>
   )
 }
 
 export default Navbar
+
+/*
+{currentUser ? 
+  <UserSection>
+    <UserText>
+      <Link to={`/profile/${currentUser._id}`} style={{'color': 'white', 'textDecoration': 'none'}}>
+        {currentUser.username}
+      </Link>
+    </UserText>
+    <Logout onClick={onLogout}>Logout</Logout>
+  </UserSection>
+  : 
+  <AuthSection>
+    <AuthLink>
+      <Link to='/login'>Login</Link>
+    </AuthLink>
+    
+  </AuthSection>
+  }
+*/

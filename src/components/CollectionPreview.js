@@ -57,7 +57,36 @@ const CollectionPreview = ({ collection: { name, createdAt, numGames, playersLis
   }
   
   return (
-    <Container>
+      <div className="card">
+        <div className="card-content">
+          <p className="is-size-5 has-text-weight-semibold	">{name}</p>
+          <p className="is-size-6">
+            {`Created ${(new window.Date(createdAt)).toDateString()}`}
+          </p>
+          <p className="is-size-6">
+            Players - {playersList.map(item => `${item} `)}
+            
+          </p>
+          <p className="is-size-6">
+            {numGames} Games
+          </p>
+        </div>
+        <footer className="card-footer">
+          <p className="card-footer-item">
+            <span>
+              <a className="is-size-5" onClick={onClick}>Practice</a>
+            </span>
+          </p>
+        </footer>
+        
+      </div>
+  )
+}
+
+export default withRouter(CollectionPreview)
+
+/*
+<Container>
       <Heading>{name}</Heading>
       <Date>{`Created At - ${(new window.Date(createdAt)).toDateString()}`}</Date>
       {playersList && 
@@ -69,7 +98,4 @@ const CollectionPreview = ({ collection: { name, createdAt, numGames, playersLis
       <Detail>{numGames} Games</Detail>
       <Button onClick={onClick}>Practice</Button>
     </Container>
-  )
-}
-
-export default withRouter(CollectionPreview)
+    */

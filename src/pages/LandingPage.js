@@ -9,17 +9,24 @@ const Subtitle = styled.span``
 
 const LandingPage = () => {
   return (
-    <Container>
+    <>
       <Navbar />
-      <Heading>
-        Chessalong helps build your chess intuition through repetition. Replay through hundreds of master games selected by you and improve.
-      </Heading>
-      <Subtitle>
+      <section className="hero">
+        <div className="hero-body">
+          <div className="container">
+            <p className="title"> 
+            Build your chess intuition through repetition
+            </p>
+            <p className="subtitle">
+            Replay through hundreds of master games selected by yourself.
+            </p>
+          </div>
+        </div>
         
-      </Subtitle>
-      
-      
-    </Container>
+        
+        
+      </section>
+    </>
   )
 }
 

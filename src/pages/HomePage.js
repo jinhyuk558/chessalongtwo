@@ -31,19 +31,25 @@ const HomePage = () => {
   },[])
 
   return (
-    <Container>
+    <>
       <Navbar />
-      <Wrapper>
-        <Heading>Popular Public Collections</Heading>
-        {
-          popularCollections ? 
-          popularCollections.map(item => <CollectionPreview key={item._id} collection={item} />) :
-          ''
-        }
-      </Wrapper>
-      
-    </Container>
+      <div className="section">
+        <div className="container">
+          <p className="title">Popular Public Collections</p>
+          <div className="columns is-multiline">
+            {popularCollections && 
+              popularCollections.map(item => 
+                <div className="column is-one-quarter">
+                  <CollectionPreview key={item._id} collection={item} />
+                </div>)
+            }
+          </div>
+        </div>
+       </div>
+    </>
   )
 }
 
 export default HomePage
+
+

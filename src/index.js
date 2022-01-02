@@ -9,6 +9,8 @@ import { PersistGate } from 'redux-persist/integration/react';
 import {publicRequest, testInstance} from './services/makeRequest'
 import TokenService from './services/tokenService'
 import { refreshToken } from './redux/userRedux';
+import 'bulma/css/bulma.min.css';
+
 
 ReactDOM.render(
   <Provider store={store}>
