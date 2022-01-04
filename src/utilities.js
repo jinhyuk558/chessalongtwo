@@ -12,11 +12,12 @@ export const generateHeadingText = (players, playingAs) => {
   return headingText
 }
 
+
 export const generateWinnerText = (players, winner) => {
   const white = players.white
   const black = players.black
   const winnerText = winner ? 
-    `${winner === 'white' ? white.user.name : black.user.name} wins` : 
+    `${winner === 'white' ? white.user.name : black.user.name}` : 
     'draw'
   return winnerText
 }

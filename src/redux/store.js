@@ -20,13 +20,12 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, userReducer)
 
-// I don't know how many times this runs
+
 const getCurrentUser = () => {
   const user = JSON.parse(localStorage.getItem('persist:root'))?.currentUser
   return user ? JSON.parse(user) : {}
 }
 
- 
 
 const rootReducer = (state, action) => {
   if (action.type === 'LOGOUT') {
@@ -38,7 +37,7 @@ const rootReducer = (state, action) => {
     const currentUser = getCurrentUser()
     const newState = {
       ...state,
-      user: {...currentUser, accessToken: action.payload }
+      currentUser: {...currentUser, accessToken: action.payload }
     }
     console.log('CHANGING REDUX: ' + action.payload)
     return persistedReducer(newState, action)
@@ -51,7 +50,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
   getDefaultMiddleware({
     serializableCheck: {
-      ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      ignoredActions: [FLUSH, PAUSE, PERSIST, PURGE, REGISTER],
     },
   }),
 })

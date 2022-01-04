@@ -26,9 +26,9 @@ ReactDOM.render(
 
 
 const setup = (store) => {
-  console.log('???')
   testInstance.interceptors.request.use(
     (config) => {
+      
       const token = TokenService.getLocalAccessToken()
       if (token) {
         config.headers = {
@@ -47,7 +47,7 @@ const setup = (store) => {
       return res
     },
     async (err) => {
-      //console.log('DETECTED: could not make collection: ' + err)
+      console.log('DETECTED: could not make collection: ' + err)
       const originalConfig = err.config 
       //console.log(originalConfig)
       if (originalConfig && originalConfig.url !== '/auth/login' && err.response) {
@@ -58,19 +58,20 @@ const setup = (store) => {
           try {
             const rs = await publicRequest.post('/auth/refreshtoken', {
               refreshToken: TokenService.getLocalRefreshToken()
-            }).then(() => console.log('success')).catch(e => {
-              console.log('Error: ' + JSON.parse(e))
             })
-            if (rs && rs.do === 'logout') {
-              dispatch({ type: 'LOGOUT' })
+            // if (rs && rs.do === 'logout') {
+            //   dispatch({ type: 'LOGOUT' })
            
-            }
+            // }
+            console.log(rs)
             const { accessToken } = rs.data 
+
             dispatch(refreshToken(accessToken))
+
             console.log('Old access token: ' +TokenService.getLocalAccessToken())
             TokenService.updateLocalAccessToken(accessToken)
             console.log('New access token: ' + TokenService.getLocalAccessToken())
-            //console.log(originalConfig)
+            
             originalConfig.data = JSON.parse(originalConfig.data)
             return testInstance(originalConfig)
           } catch (_error) {

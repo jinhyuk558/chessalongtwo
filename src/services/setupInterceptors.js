@@ -34,7 +34,6 @@ const setup = (store) => {
       //console.log(err.response)
       if (originalConfig && originalConfig.url !== '/auth/login' && err.response) {
         // access token was expired 
-        //console.log('DETECTED: Inside if statement')
         if (err.response.status === 403 && !originalConfig._retry) {
           originalConfig._retry = true 
 
@@ -49,13 +48,12 @@ const setup = (store) => {
               return Promise.reject()
             }
             const { accessToken } = rs.data 
-            //console.log('TRYING to replace the token with: ' + accessToken)
+            //console.log('Trying to replace the token with: ' + accessToken)
             dispatch(refreshToken(accessToken))
             //console.log('Old access token: ' +TokenService.getLocalAccessToken())
             TokenService.updateLocalAccessToken(accessToken)
             //console.log('New access token: ' + TokenService.getLocalAccessToken())
-            //console.log('Below is the ORIGINAL CONFIG')
-            //console.log(originalConfig)
+
             originalConfig.data = JSON.parse(originalConfig.data)
             return testInstance(originalConfig)
           } catch (_error) {

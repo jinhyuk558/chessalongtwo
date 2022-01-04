@@ -1,22 +1,8 @@
 
 import { useState } from 'react'
-import styled from 'styled-components'
 import { register } from '../redux/apiCalls'
 import { useDispatch, useSelector } from 'react-redux'
 
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 25%;
-`
-const Title = styled.h1``
-const Input = styled.input``
-const Button = styled.button``
 
 const RegisterPage = () => {
 
@@ -77,12 +63,11 @@ const RegisterPage = () => {
               </div>
               <div className="field">
                
-                {isError &&  <div className="block" style={{"color": "red"}}>Error registering</div>}
+                {isError && <div className="block" style={{"color": "red"}}>Error registering</div>}
                 <button 
                 className={`button is-success ${isFetching && 'is-loading'}`}
                   disabled={isFetching} 
                   onClick={onClick}
-
                 >
                   Sign up
                 </button>
@@ -94,23 +79,8 @@ const RegisterPage = () => {
     </div>
   </section>
 
-
-   
   )
 }
 
 export default RegisterPage
 
-/*
- <Container>
-      <Wrapper>
-        <Title>Register</Title>
-        <Input placeholder="username" onChange={(e) => setUsername(e.target.value)} />
-        <Input placeholder="email" onChange={(e) => setEmail(e.target.value)} />
-        <Input placeholder="password" type="password" onChange={(e) => setPassword(e.target.value)} />
-        <Button disabled={isFetching} onClick={onClick}>Submit</Button>
-        {isFetching && 'Loading ...'}
-        {isError && 'Error registering'}
-      </Wrapper>
-    </Container>
-    */

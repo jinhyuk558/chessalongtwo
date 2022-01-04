@@ -32,7 +32,7 @@ export const sampleGames = [
   "clock": {
   "initial": 180,
   "increment": 0,
-  "totalTime": 180
+  "totalTime": 182
   }
   },
   {

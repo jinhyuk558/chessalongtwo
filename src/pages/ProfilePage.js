@@ -1,27 +1,11 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import styled from "styled-components";
 import CollectionPreview from "../components/CollectionPreview";
 import Navbar from "../components/Navbar";
-import { publicRequest } from "../services/makeRequest";
+import { publicRequest, testInstance } from "../services/makeRequest";
+import { faBook, faUser } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Container = styled.div`
-  padding: 15px 60px;
-`
-const Title = styled.h1`
-  font-weight: 500;
-  font-size: 30px;
-`
-const Date = styled.p`
-  margin-bottom: 25px;
-  font-size: 10px;
-`
-const Heading = styled.h4`
-  margin-bottom: 5px;
-  font-weight: 500;
-  border-bottom: 1px solid black;
-  width: fit-content;
-`
 
 const ProfilePage = () => {
   const user = useSelector(state => state.currentUser)
@@ -30,6 +14,7 @@ const ProfilePage = () => {
   
   // state
   const [userCollections, setUserCollections] = useState([])
+  const [isUnauthenticated, setIsUnauthenticated] = useState(false)
 
   /*
    publicRequest.get(`/collection/${collectionId}`)
@@ -42,68 +27,69 @@ const ProfilePage = () => {
       )
     })
     .catch((e) => console.log('could not get collection'))
-    */
-
-    // now: first test getting collecti in postman then do it here
+  */
 
   useEffect(() => {
-    publicRequest.get(`/collection/user/${user._id}`)
+    testInstance.get(`/collection/user/${user._id}`)
       .then(result => {
         setUserCollections(result.data)
         console.log('Below is the users collections')
         console.log(result.data)
       })
-      .catch(e => console.log('could not get this users collection'))
+      .catch(e => setIsUnauthenticated(true))
   },[user])
+
   return (
     <>
       <Navbar />
-      <div className="section">
+      {isUnauthenticated ? 
+        <p className="mt-5 ml-6">You are not authenticated</p> :
         
+      
+        <div className="section">
           {
             user ? 
             <div className="container">
-              <p className="title">{user.username}</p>
+              <span class="icon-text is-size-3 has-text-weight-semibold mb-3">
+                <span class="icon">
+                  <FontAwesomeIcon icon={faUser} />
+                </span>
+                <span >{user.username}</span>
+              </span>
               <p className="subtitle is-size-6">{dateText}</p>
-              <p className="is-size-4 has-text-weight-medium">Collections</p>
-              <div className="columns is-multiline">
-              {
-                userCollections.length > 0 ?
-                userCollections.map(item => 
-                  <div className="column is-one-quarter">
-                    <CollectionPreview collection={item} key={item._id} />
-                  </div>
-                ) 
-                :
-                '(Currently Empty)'
-              }
+              <span className="is-size-4 mt-4 mb-3 has-text-weight-medium">Collections</span>
+              <div className="">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th><FontAwesomeIcon icon={faBook} className="mr-2" />Name</th>
+                      <th># Games</th> 
+                      <th>Date</th>
+                      <th>Players</th>
+                      <th>Practice</th>
+                      
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {userCollections.length > 0 ?
+                      userCollections.map(item => 
+                        <CollectionPreview key={item._id} collection={item} viewerIsUser={true} />) 
+                        :
+                      <div className="container mt-4">Currently Empty</div>
+                    }
+                  </tbody>
+                </table>
               </div>
               
             </div>
-            : <p className="is-size-5">Loading ...</p>
+            : <p className="is-size-5"></p>
 
           }
         </div>
+      }
     </>
   )
 }
 
 export default ProfilePage
 
-/*
-<Container>
-        
-        {user ? 
-          <div>
-            
-            <Heading>Collections</Heading>
-            {
-              userCollections.length > 0 ?
-              userCollections.map(item => <CollectionPreview collection={item} key={item._id} />) :
-              '(Currently Empty)'
-            }
-          </div>
-        : <div>'Loading ...'</div>
-        }
-      </Container>
-      */

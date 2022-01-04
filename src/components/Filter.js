@@ -1,38 +1,63 @@
 
 import styled from "styled-components"
 
-const Container = styled.div`
-  margin-bottom: 10px;
-  margin-top: 5px;
-`
 const Select = styled.select`
   margin-right: 10px;
-  height: 30px;
+  height: 40px;
+  font-size: 17px;
+  border: 1px solid lightgray;
+  padding: 5px 10px;
+  border-radius: 4px;
+  color: 	#363636;
 `
-const Option = styled.option``
+const Option = styled.option`
+height: 40px;
+font-size: 17px;
+`
 const Label = styled.label``
 
-const Filter = ({ setPlayer, setNumGames, setVariant }) => {
+const Filter = ({ 
+  setPlayer, setNumGames, setVariant, 
+  loadingGames, username, onFindGamesClick }) => {
+  
   return (
-    <Container>
-      <Label htmlFor="player">Player: </Label>
-      <Select name="player" onChange={(e) => setPlayer(e.target.value)}>
-        <Option value="mutdpro">mutdpro</Option>
+    <div className="container">
+      <Select name="player" id="id-player" onChange={(e) => setPlayer(e.target.value)}>
+        <Option value="RealDavidNavara">GM RealDavidNavara</Option>  
+        <Option value="mutdpro">IM mutdpro</Option>
         <Option value="friendlyfish">friendlyfish</Option>
+        <Option value="Zhigalko_Sergei">GM Zhigalko_Sergei</Option>
       </Select>
       
-      <Label htmlFor="numGames">Number of games: </Label>
-      <Select name="numGames" onChange={(e) => setNumGames(e.target.value)}>
-        <Option value="10">10</Option>
-        <Option value="20">20</Option>
+      <Select name="numGames" id="id-games" onChange={(e) => setNumGames(e.target.value)}>
+        <Option value="10">10 Games</Option>
+        <Option value="20">20 Games</Option>
       </Select>
 
-      <Label htmlFor="variant">Variant </Label>
-      <Select name="variant" onChange={(e) => setVariant(e.target.value)}>
-        <Option value="blitz">blitz</Option>
+      <Select name="variant" id="id-variant" onChange={(e) => setVariant(e.target.value)}>
         <Option value="rapid">rapid</Option>
+        <Option value="blitz">blitz</Option>
       </Select>
-    </Container>
+
+      <div className="container">
+        <p className="is-size-6 mt-3" style={{"color": "gray"}}>
+          (Note: rapid games are recommended for better game quality)
+        </p>
+        <button 
+          className="button is-primary mt-1 mb-6" 
+          disabled={loadingGames} 
+          onClick={(e) => {
+            console.log('Response: ' + document.getElementById('id-player').value)
+            setPlayer(document.getElementById('id-player').value)
+            setNumGames(document.getElementById('id-games').value)
+            setVariant(document.getElementById('id-variant').value)  
+            onFindGamesClick(e)
+          }}
+        >
+          Find Games
+        </button>
+      </div>
+    </div>
   )
 }
 

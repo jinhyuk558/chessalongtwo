@@ -17,7 +17,6 @@ class TokenService {
     // const user = JSON.parse(localStorage.getItem('persist:root'))?.currentUser
     // const currentUser = JSON.parse(user)
     // currentUser.accessToken = token 
-    // localStorage.
     let root = JSON.parse(localStorage.getItem('persist:root'))
     let currentUser = JSON.parse(root.currentUser)
     currentUser.accessToken = token
