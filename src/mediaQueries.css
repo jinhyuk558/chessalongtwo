@@ -1,0 +1,39 @@
+
+body {
+  
+}
+
+
+/* smartphones */
+@media screen and (min-width: 320px) {
+  #gamePreviewTitle {
+    font-size: 0.75rem;
+  }
+
+}
+
+/* tablet */
+@media screen and (min-width: 770px) {
+  #gamePreviewDiv {
+    flex-direction: column;
+  }
+  #gamePreviewTitle {
+    font-size: 1.25rem;
+  }
+}
+
+/* widescreen */
+@media screen and (max-width: 1216px) {
+  /* fix: decrease game preview title size and the details */
+  /* fix: make board smaller and game panel text much smaller */
+  .hide {
+    display: none;
+  }
+}
+
+/* widescreen */
+@media screen and (min-width: 1216px) {
+  /* fix: decrease game preview title size and the details */
+  /* fix: make board smaller and game panel text much smaller */
+  
+}

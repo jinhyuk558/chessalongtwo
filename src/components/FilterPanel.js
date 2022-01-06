@@ -21,7 +21,9 @@ const FilterPanel = ({
 
   return (
     <div className="container">
-      <p className="is-size-4 has-text-weight-medium">Choose from pre-selected players</p>
+      <p className="is-size-4 is-size-5-tablet is-size-5-mobile has-text-weight-medium">
+        Choose from pre-selected players
+      </p>
       <Filter 
         setPlayer={setUsername}
         setNumGames={setNumGames}

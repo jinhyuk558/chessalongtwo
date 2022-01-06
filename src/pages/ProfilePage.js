@@ -43,7 +43,7 @@ const ProfilePage = () => {
     <>
       <Navbar />
       {isUnauthenticated ? 
-        <p className="mt-5 ml-6">You are not authenticated</p> :
+        <p className="mt-5 ml-6">You are not authenticated. Please log out and try again.</p> :
         
       
         <div className="section">

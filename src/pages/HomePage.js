@@ -8,6 +8,7 @@ import { publicRequest, testInstance } from "../services/makeRequest";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import {useMediaQuery} from 'react-responsive'
 
 
 const HomePage = () => {
@@ -18,6 +19,9 @@ const HomePage = () => {
   const [topRapidUsernames, setTopRapidUsernames] = useState([])
   const [blitzSelected, setBlitzSelected] = useState(true)
   const user = useSelector(state => state.currentUser)
+
+  const isWidescreen = useMediaQuery({ query: '(max-width: 1432px)' })
+  const isTablet = useMediaQuery({ query: '(max-width: 562px)' })
 
   useEffect(() => {
     publicRequest.get('/collection/sorted/popular')
@@ -68,22 +72,24 @@ const HomePage = () => {
               <div className="card ">
                 <div className="card-content">
                   <span class="icon-text is-size-3 mb-5 has-text-weight-bold">
+                    {!isTablet &&
                     <span class="icon mr-3">
                       <FontAwesomeIcon icon={faStar} />
                     </span>
+                    }
                     <p >Popular Public Collections</p>
                   </span>
                   <table class="table ">
                     <thead>
                       <tr>
                         <th><FontAwesomeIcon icon={faBook} className="mr-2" />Name</th>
-                        <th># Games</th> 
-                        <th>Date</th>
+                        <th># {!isWidescreen && 'Games'}</th> 
+                        <th className="hide">Date</th>
                         <th> 
                           <abbr title="Times played"><FontAwesomeIcon icon={faEye} /></abbr>
                         </th>
                         <th>Created by</th>
-                        <th>Players</th>
+                        <th className="hide">Players</th>
                         <th>Practice</th>
                         
                       </tr>
@@ -162,10 +168,8 @@ const HomePage = () => {
                         <thead>
                           <tr>
                             <th><FontAwesomeIcon icon={faBook} className="mr-2" />Name</th>
-                            <th># Games</th> 
-                            <th>Date</th>
-                            <th><abbr title="Times played"><FontAwesomeIcon icon={faEye} /></abbr></th>
-                            <th>Created by</th>
+                            <th># {!isWidescreen && 'Games'}</th> 
+                            {!isTablet && <th>Date</th>}
                             <th>Players</th>
                             <th>Practice</th>
                           </tr>
@@ -177,7 +181,7 @@ const HomePage = () => {
                                 key={item._id} 
                                 viewerIsUser={true} 
                                 collection={item} 
-                                viewerIsUser={false} 
+                                viewerIsUser={true} 
                               />)
                           }
                           {userCollections.length === 0 && <p className="mt-3">(List is empty!)</p>}

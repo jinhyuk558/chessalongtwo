@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux'
 import { Redirect, withRouter } from "react-router-dom";
 import ProfilePage from "./pages/ProfilePage";
 import LandingPage from "./pages/LandingPage";
+import "./mediaQueries.css"
 import { useEffect, useState } from "react";
 
 

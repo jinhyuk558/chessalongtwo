@@ -8,15 +8,18 @@ import Navbar from "../components/Navbar"
 import { useLocation } from "react-router-dom"
 import { publicRequest, testInstance } from '../services/makeRequest'
 import GridNavigation from "../components/GridNavigation"
-import { faChessQueen } from "@fortawesome/free-solid-svg-icons"
+import { faChessQueen, faShare } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useSelector } from "react-redux"
+import {useMediaQuery} from 'react-responsive'
 
 const MainWrapper = styled.div`
-  padding: 10px 60px;
+  padding: ${props => props.tablet ? '10px 10px' : '10px 60px'};
+
 `
 const Wrapper = styled.div`
   display: flex;
+  flex-direction: ${props => props.movePanelDown ? 'column' : 'row'}
 `
 const BoardSection = styled.div`
   margin-right: 20px;
@@ -55,6 +58,25 @@ const PracticeCollection = () => {
   const [completedGames, setCompletedGames] = useState([])
   let moveSnd = new Audio(require('../sounds/move.wav'))
   let captureSound = new Audio(require('../sounds/captureEdited.wav'))
+
+  // MEDIA QUERIES  
+  const isFullhd = useMediaQuery({ query: '(min-width: 1408px)' })
+  const isWidescreen = useMediaQuery({ query: '(min-width: 1216px)' })
+  const isDesktop = useMediaQuery({ query: '(min-width: 1024px)' })
+  const isTabletBig = useMediaQuery({ query: '(min-width: 900px)' })
+  const isTablet = useMediaQuery({ query: '(min-width: 769px)' })
+  const isTabletSmall = useMediaQuery({ query: '(min-width: 600px)' })
+  const isMobileBig = useMediaQuery({ query: '(min-width: 490px)' })
+  const isMobile = useMediaQuery({ query: '(min-width: 420px)' })
+  const isMobileSmall = useMediaQuery({ query: '(min-width: 315px)' })
+
+
+
+  // mobile: up to 768px
+  // tablet: from 769px
+  // desktop: from 1024px
+  // widescreen: from 1216px
+
 
   // load data from endpoint
   useEffect(() => {
@@ -310,33 +332,74 @@ const PracticeCollection = () => {
   const onGridClick = (index) => {
     onNextGame(index)
   }
+
+  const onShareClick = (e) => {
+    e.preventDefault()
+    navigator.clipboard.writeText(`localhost:3000/practice/${collection._id}`)
+  }
+
+  const determineBoardWidth = () => {
+    if (isFullhd) {
+      return 700
+    } else if (isWidescreen) {
+      return 650
+    } else if (isDesktop) {
+      console.log('DESKTOP')
+      return 550
+    } else if (isTabletBig) {
+      return 570
+    } else if (isTablet) {
+      console.log('TABLET')
+      return 510
+    } else if (isTabletSmall) {
+      // this is when the game panel goes down
+      return 550
+    } else if (isMobileBig) {
+      return 450
+    } else if (isMobile) {
+      console.log('MOBILE')
+      return 400
+    } else if (isMobileSmall) {
+      console.log('MOBILE SMALL')
+      return 250
+    }
+    return 300
+  }
+
+  const test = () => {
+    console.log('Mobile: '  + isMobile + ', Tablet: ' + isTablet)
+    return isMobile || isTablet
+  }
   
   return (
-    <>
+    <div style={{"display": "flex", "minHeight": "100vh", "flexDirection": "column"}}>
       <Navbar />
-      <div className="">
+      <div className=" " style={{"flex": "1"}}>
         {collection ? 
         <>
-          <MainWrapper>
-            <div className="card has-background-white-ter">
-              <div className="card-content">
-                <span class="icon-text is-size-3 mb-2">
+          <MainWrapper tablet={!isDesktop} mobile={!isTablet}>
+            <div className={`card has-background-white-ter mt-3`}>
+              <div className={`card-content`}>
+                <span class={`icon-text ${!isTablet ? 'is-size-4 mb-1' : 'is-size-3 mb-2'} `}>
+                  {isTabletSmall &&
                   <span class="icon">
                     <FontAwesomeIcon icon={faChessQueen} className="" />
-                  </span>
+                  </span>}
                   <p className="mb-3  has-text-weight-bold">Playing {collection.name}</p>
                 </span>
-                <Wrapper>
-                  <BoardSection>
+                <Wrapper movePanelDown={!isTablet}>
+                  <BoardSection className={`${!isTablet ? 'mb-2' : ''}`}>
                     <Chessboard 
                       position={historyNumMovesBack === 0 ? clientGame.fen() : 
                                 historyFENS[historyFENS.length - historyNumMovesBack - 1]} 
                       onPieceDrop={onDrop} 
                       boardOrientation={playingAsColor} 
-                      boardWidth={650}
+                      boardWidth={
+                        determineBoardWidth()
+                      }
                     />
                   </BoardSection>
-                  <div>
+                  <div >
                     <GamePanel 
                       players={collection.gamesList[gameIndex].players} 
                       playingAs={collection.gamesList[gameIndex].playingAs}
@@ -365,12 +428,19 @@ const PracticeCollection = () => {
                       currentIndex={gameIndex} 
                       />
                     <button 
-                      className="button mt-2 is-info" 
+                      className="button mt-3 is-info mr-2" 
                       disabled={nextGameDisabled} 
                       onClick={onMarkComplete}
                     >
                       Mark This Game Complete
                     </button>
+                    {collection.isPublic && 
+                      <button className="button mt-3 is-info" onClick={onShareClick}>
+                          <FontAwesomeIcon icon={faShare} className="mr-1" />
+                          Copy link
+                      </button>
+                    }
+                    
                   </div>
 
                 </Wrapper>
@@ -381,12 +451,13 @@ const PracticeCollection = () => {
         :
         <header className="header">
           <div className="container mt-5">
-            You are not authorized to view this
+            You are not authorized to view this. Please log out and try again.
           </div>
         </header> 
         }
       </div>
-    </>
+     
+    </div>
   )
   
 }

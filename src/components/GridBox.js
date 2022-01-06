@@ -10,7 +10,6 @@ width: 40px;
 height: 40px;
 margin-bottom: 5px;
 margin-right: 5px;
-font-
 `
 
 const GridBox = ({ completed, id, onClickBehavior }) => {

@@ -71,6 +71,7 @@ const MakeCollection = () => {
 
   
   const onFindGamesClick = (e) => {
+    console.log('HERE' + gamesList)
     e.preventDefault()
     if (maxGamesReached) {
       return
@@ -98,8 +99,9 @@ const MakeCollection = () => {
           playingAs: username,
           playingAsColor: item.players.white.user.name === username ? 'white' : 'black'
         }))
-        console.log('edited games: ' + editedGamesList)
+       
         setGamesList((prev) => [...prev, ...editedGamesList])
+        
         
         if (fetchedGames.length > 0) {
           setNoGamesFound(false)
@@ -132,7 +134,6 @@ const MakeCollection = () => {
     })
     .then((result) => {
       console.log('successfully posted collection')
-      console.log(result.data)
       history.push(`/practice/${result.data._id}`)
       console.log('second')
       return <Redirect to={`/practice/${result.data._id}`} />
@@ -147,6 +148,7 @@ const MakeCollection = () => {
   }
 
   const onDeleteGame = (id) => {
+    console.log(gamesList)
     setGamesList(gamesList.filter((game, i) => i !== id))
     if (gamesList.length - 1 < MAX_NUM_GAMES) {
       setMaxGamesReached(false)
@@ -160,11 +162,13 @@ const MakeCollection = () => {
       <div className="container">
         <div className="card has-background-light mb-6">
           <div className="card-content">
-            <span class="icon-text is-size-3 mb-5">
-              <span class="icon mr-4">
+            <span className="icon-text is-size-3 is-size-4-mobile mb-5">
+              <span className="icon mr-4">
                 <FontAwesomeIcon icon={faChessKnight} size="" />
               </span>
-              <span className="has-text-weight-medium mb-2">Find Games</span>
+              <span className="has-text-weight-medium mb-2">
+                Find Games
+              </span>
             </span>
             
             <FilterPanel 
@@ -197,11 +201,12 @@ const MakeCollection = () => {
 
         <div className="columns is-multiline">
           {gamesList.map((item,index) => (
-            <div className="column is-one-quarter">
+            <div className="column is-one-thirds-widescreen is-half-tablet is-full-mobile">
               <GamePreview 
                 game={item} 
                 playingAs={item.playingAs} 
                 key={index} id={index} 
+                createdAt={item.createdAt}
                 onDeleteGame={onDeleteGame}/>
             </div>
             

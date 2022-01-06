@@ -22,7 +22,7 @@ const SearchFilterPanel = ({ setUsername, setNumGames,
     // add blitz/rapid icons later
     <div className="container">
       <div className="container mb-3">
-        <p className="is-size-4 has-text-weight-medium">Search players</p>
+        <p className="is-size-4 is-size-5-tablet is-size-5-mobile has-text-weight-medium">Search players</p>
         <input 
           className="input mr-2" 
           name="search" 
